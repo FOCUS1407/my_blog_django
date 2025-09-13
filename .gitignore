@@ -1,0 +1,23 @@
+# Fichiers de base de données
+db.sqlite3
+*.sqlite3
+
+# Fichiers de cache Python
+__pycache__/
+*.pyc
+
+# Fichiers media (générés par les utilisateurs)
+/media/
+
+# Fichiers statiques collectés
+/static_root/
+
+# Fichiers d'environnement (si vous en utilisez)
+.env
+
+# Fichiers de logs
+*.log
+
+# Fichiers spécifiques à l'IDE
+.vscode/
+.idea/

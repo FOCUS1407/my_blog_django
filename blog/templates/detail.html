@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load static %}
+    
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-center my-4">Détail de l'article</h1>
+            <img src="{{article.image.url}}" alt="Image de {{article.title}}" class="img-fluid rounded shadow-sm mb-4">
+            <h2 class="mt-3">{{article.title}}</h2>
+            <p class="lead">{{article.desc}}</p>
+            <a href="{% url 'home' %}" class="btn btn-secondary my-3">Retour au stock</a>
+        </div>
+        <div class="col-md-4">
+            <h3 class="my-4">Articles similaires</h3>
+            {% for art in aer %} 
+            <a href="{% url 'detail' art.id %}" class="text-decoration-none text-dark">
+                <div class="card mb-3 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-5">
+                            {% if art.image != "http://default" %} 
+                                <img src="{{art.image.url}}" class="img-fluid rounded-start" alt="Image de {{art.title}}" style="height: 100%; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'img/logo.png' %}" class="img-fluid rounded-start" alt="Image par défaut" style="height: 100%; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body">
+                                <h5 class="card-title" style="font-size: 1rem;">{{art.title}}</h5>
+                                <p class="card-text" style="font-size: 0.85rem;">
+                                    <small class="text-muted">{{art.desc|truncatewords:7}}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor%}
+        </div>                
+    </div>
+</div>
+{%endblock%}

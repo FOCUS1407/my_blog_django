@@ -1,0 +1,69 @@
+{% extends 'base.html' %} 
+
+
+{% load static %}
+
+{% block content%}
+<h1 class="text-center mt-3">Bienvenue sur notre stock</h1>
+<div class="container">
+      <div class="row">
+        {% for article in liste_articles %}
+        <div class="col-12 col-md-6 col-lg-3 col-xl-3">
+            <div class="card mb-2 p-2"> 
+              <!-- Card image -->
+              {% if article.image == "http://default" %}
+              <a href="{% url 'detail' article.id %}">
+                <img class="card-img-top" src="{% static 'img/logo.png' %}" alt="Card image cap" style="height:200px">
+              </a>
+              {% else %}
+              <a href="{% url 'detail' article.id %}">
+                <img class="card-img-top" src="{{article.image.url}}" alt="Card image cap" style="height:200px">
+              </a>
+              {% endif %}
+        
+              <!-- Card content -->
+              <div class="card-body" style="height:220px;">
+        
+                  <!-- Title -->
+                  <h4 class="card-title"><a href="{% url 'detail' article.id %}">{{article.title}}</a></h4>
+                  <!-- Text -->
+                  <p class="card-text">{{article.desc|truncatewords_html:8}}</p>
+                  <p class="card-text">Publié il y a {{article.created_at| timesince}}</p>
+                  <!-- Button -->
+                 <a href="{% url 'detail' article.id %}" class="btn btn-primary">Lire la suite </a>		  
+              </div>		          
+            </div>
+        </div>
+        {% endfor %}		           	 
+      </div>
+  <!--end row-->
+
+  <nav class="my-4">
+    <ul class="pagination justify-content-center">
+      {% if liste_articles.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ liste_articles.previous_page_number }}">Précédent</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Précédent</a>
+        </li>
+      {% endif %}
+
+      {% for num in liste_articles.paginator.page_range %}
+        {% if liste_articles.number == num %}
+          <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if liste_articles.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ liste_articles.next_page_number }}">Suivant</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Suivant</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{%endblock%}
