@@ -14,6 +14,7 @@ class Article(models.Model):
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
     desc=models.TextField()
     image=models.ImageField()
+    published=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     

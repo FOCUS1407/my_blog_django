@@ -2,10 +2,11 @@ from unicodedata import category
 from django import http
 from django.shortcuts import render
 from .models import Article, Category
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 def home(request):
-    list_articles=Article.objects.all().order_by('-created_at')
+    list_articles=Article.objects.filter(published=True).order_by('-created_at')
     paginator = Paginator(list_articles, 4) # Affiche 4 articles par page
     
     page_number = request.GET.get('page')
@@ -15,17 +16,18 @@ def home(request):
 
 ### Détaille sur un Article
 def detail(request,id_article):
-    article=Article.objects.get(id=id_article)
+    article=Article.objects.get(id=id_article, published=True)
     category=article.category
-    article_en_relation=Article.objects.filter(category=category).exclude(id=id_article)[:5]
+    article_en_relation=Article.objects.filter(category=category, published=True).exclude(id=id_article)[:5]
     return render(request,'detail.html',{"article":article,"aer":article_en_relation})
     
 ### Recherche sur un Article
 def search(request):
     query=request.GET["article"]
-    liste_article=Article.objects.filter(title__contains=query)
+    liste_article=Article.objects.filter(title__contains=query, published=True)
     return render(request,"search.html",{"liste_article":liste_article})
 
+@login_required
 def sms(request):
     message=request.GET['body']
     message_splited=message.split("-")
