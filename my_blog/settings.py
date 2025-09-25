@@ -14,7 +14,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()  # take environment variables from .env.
 import dj_database_url
-import django_heroku
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,13 +24,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xu=!ry-$k-*d5*(52i$q55m+7c^$8#pignu@6a=94usmvs2926'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-xu=!ry-$k-*d5*(52i$q55m+7c^$8#pignu@6a=94usmvs2926')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["#"]
-
+ALLOWED_HOSTS = []
+RAILWAY_HOSTNAME = os.getenv('RAILWAY_PUBLIC_DOMAIN')
+if RAILWAY_HOSTNAME:
+    ALLOWED_HOSTS.append(RAILWAY_HOSTNAME)
 
 
 
@@ -83,32 +84,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'my_blog.wsgi.application'
 
-DB_LIVE = os.getenv('DB_LIVE', 'False') == 'True'
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-
-if DB_LIVE in [False, "False"]:   
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    }
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    
-else :    
-    
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }   
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -157,4 +146,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT= os.path.join(BASE_DIR,"media")
 MEDIA_URL='/media/'
-
